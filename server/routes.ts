@@ -14,7 +14,7 @@ function extractWhatsAppId(url: string): ExtractionResponse {
       if (groupId && groupId.length > 0) {
         return {
           originalUrl: url,
-          extractedId: groupId,
+          extractedId: groupId + '@g.us',
           urlType: 'group',
           status: 'success'
         };
@@ -27,7 +27,7 @@ function extractWhatsAppId(url: string): ExtractionResponse {
       if (groupId && groupId.length > 0) {
         return {
           originalUrl: url,
-          extractedId: groupId,
+          extractedId: groupId + '@g.us',
           urlType: 'group',
           status: 'success'
         };
@@ -41,7 +41,7 @@ function extractWhatsAppId(url: string): ExtractionResponse {
       if (channelId && channelId.length > 0) {
         return {
           originalUrl: url,
-          extractedId: channelId,
+          extractedId: channelId + '@newsletter',
           urlType: 'channel',
           status: 'success'
         };
