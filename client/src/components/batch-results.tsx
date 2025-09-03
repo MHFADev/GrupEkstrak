@@ -35,21 +35,22 @@ export default function BatchResults({ results }: BatchResultsProps) {
 
   const copyAllIDs = () => {
     const allIDs = successfulResults
-      .map(r => r.extractedId)
+      .map(r => r.whatsappId)
       .filter(id => id)
       .join('\n');
     
     copyToClipboard(allIDs);
     toast({
       title: "All IDs Copied!",
-      description: `${successfulResults.length} IDs copied to clipboard`,
+      description: `${successfulResults.length} WhatsApp IDs copied to clipboard`,
     });
   };
 
   const exportResults = () => {
     const exportData = results.map(r => ({
       url: r.originalUrl,
-      extractedId: r.extractedId || '',
+      rawId: r.rawId || '',
+      whatsappId: r.whatsappId || '',
       type: r.urlType,
       status: r.status,
       error: r.errorMessage || ''
@@ -163,7 +164,8 @@ export default function BatchResults({ results }: BatchResultsProps) {
               <tr className="border-b border-border">
                 <th className="text-left py-3 text-sm font-medium text-muted-foreground">URL</th>
                 <th className="text-left py-3 text-sm font-medium text-muted-foreground">Type</th>
-                <th className="text-left py-3 text-sm font-medium text-muted-foreground">Extracted ID</th>
+                <th className="text-left py-3 text-sm font-medium text-muted-foreground">Raw ID</th>
+                <th className="text-left py-3 text-sm font-medium text-muted-foreground">WhatsApp ID</th>
                 <th className="text-left py-3 text-sm font-medium text-muted-foreground">Status</th>
                 <th className="text-right py-3 text-sm font-medium text-muted-foreground">Actions</th>
               </tr>
@@ -203,11 +205,23 @@ export default function BatchResults({ results }: BatchResultsProps) {
                     </Badge>
                   </td>
                   <td className="py-4 pr-4">
-                    {result.extractedId ? (
+                    {result.rawId ? (
+                      <code className="text-sm font-mono bg-muted px-2 py-1 rounded">
+                        {result.rawId.length > 12 
+                          ? `${result.rawId.substring(0, 12)}...`
+                          : result.rawId
+                        }
+                      </code>
+                    ) : (
+                      <span className="text-sm text-muted-foreground italic">—</span>
+                    )}
+                  </td>
+                  <td className="py-4 pr-4">
+                    {result.whatsappId ? (
                       <code className="text-sm font-mono bg-accent px-2 py-1 rounded">
-                        {result.extractedId.length > 15 
-                          ? `${result.extractedId.substring(0, 15)}...`
-                          : result.extractedId
+                        {result.whatsappId.length > 15 
+                          ? `${result.whatsappId.substring(0, 15)}...`
+                          : result.whatsappId
                         }
                       </code>
                     ) : (
@@ -235,8 +249,8 @@ export default function BatchResults({ results }: BatchResultsProps) {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => result.extractedId && copyToClipboard(result.extractedId)}
-                      disabled={!result.extractedId}
+                      onClick={() => result.whatsappId && copyToClipboard(result.whatsappId)}
+                      disabled={!result.whatsappId}
                       data-testid={`copy-id-${index}`}
                     >
                       <Copy className="h-3 w-3" />

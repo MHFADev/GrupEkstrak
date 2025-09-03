@@ -96,23 +96,35 @@ export default function ExtractionResults({ results }: ExtractionResultsProps) {
                 </div>
 
                 {/* Extracted ID or Error Message */}
-                {result.status === 'success' && result.extractedId ? (
-                  <div className="mb-4">
-                    <label className="text-sm font-medium text-muted-foreground mb-1 block">
-                      Extracted ID
-                    </label>
-                    <div className="bg-accent rounded-md p-3 flex items-center justify-between">
-                      <code className="text-sm font-mono text-accent-foreground" data-testid={`extracted-id-${index}`}>
-                        {result.extractedId}
-                      </code>
-                      <Button
-                        size="sm"
-                        onClick={() => copyToClipboard(result.extractedId!)}
-                        data-testid={`copy-button-${index}`}
-                      >
-                        <Copy className="mr-1 h-3 w-3" />
-                        Copy
-                      </Button>
+                {result.status === 'success' && result.rawId ? (
+                  <div className="space-y-4 mb-4">
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground mb-1 block">
+                        Raw ID
+                      </label>
+                      <div className="bg-muted rounded-md p-3">
+                        <code className="text-sm font-mono text-foreground" data-testid={`raw-id-${index}`}>
+                          {result.rawId}
+                        </code>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-muted-foreground mb-1 block">
+                        WhatsApp ID (Format Asli)
+                      </label>
+                      <div className="bg-accent rounded-md p-3 flex items-center justify-between">
+                        <code className="text-sm font-mono text-accent-foreground" data-testid={`whatsapp-id-${index}`}>
+                          {result.whatsappId}
+                        </code>
+                        <Button
+                          size="sm"
+                          onClick={() => copyToClipboard(result.whatsappId!)}
+                          data-testid={`copy-button-${index}`}
+                        >
+                          <Copy className="mr-1 h-3 w-3" />
+                          Copy
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 ) : (

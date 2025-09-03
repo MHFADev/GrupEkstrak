@@ -36,6 +36,8 @@ export type BatchUrlInput = z.infer<typeof batchUrlSchema>;
 export interface ExtractionResponse {
   originalUrl: string;
   extractedId: string | null;
+  rawId: string | null;
+  whatsappId: string | null;
   urlType: 'group' | 'channel' | 'unknown';
   status: 'success' | 'error';
   errorMessage?: string;

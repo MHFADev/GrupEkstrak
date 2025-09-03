@@ -15,6 +15,8 @@ function extractWhatsAppId(url: string): ExtractionResponse {
         return {
           originalUrl: url,
           extractedId: groupId + '@g.us',
+          rawId: groupId,
+          whatsappId: groupId + '@g.us',
           urlType: 'group',
           status: 'success'
         };
@@ -28,6 +30,8 @@ function extractWhatsAppId(url: string): ExtractionResponse {
         return {
           originalUrl: url,
           extractedId: groupId + '@g.us',
+          rawId: groupId,
+          whatsappId: groupId + '@g.us',
           urlType: 'group',
           status: 'success'
         };
@@ -42,6 +46,8 @@ function extractWhatsAppId(url: string): ExtractionResponse {
         return {
           originalUrl: url,
           extractedId: channelId + '@newsletter',
+          rawId: channelId,
+          whatsappId: channelId + '@newsletter',
           urlType: 'channel',
           status: 'success'
         };
@@ -52,6 +58,8 @@ function extractWhatsAppId(url: string): ExtractionResponse {
     return {
       originalUrl: url,
       extractedId: null,
+      rawId: null,
+      whatsappId: null,
       urlType: 'unknown',
       status: 'error',
       errorMessage: 'This URL is not a valid WhatsApp group or channel link'
@@ -61,6 +69,8 @@ function extractWhatsAppId(url: string): ExtractionResponse {
     return {
       originalUrl: url,
       extractedId: null,
+      rawId: null,
+      whatsappId: null,
       urlType: 'unknown',
       status: 'error',
       errorMessage: 'Invalid URL format'
