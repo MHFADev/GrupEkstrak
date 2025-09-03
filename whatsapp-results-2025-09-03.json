@@ -1,0 +1,16 @@
+[
+  {
+    "url": "https://chat.whatsapp.com/ABC123DEF456",
+    "rawId": "ABC123DEF456",
+    "whatsappId": "ABC123DEF456@g.us",
+    "type": "group",
+    "status": "success"
+  },
+  {
+    "url": "https://whatsapp.com/channel/XYZ789",
+    "rawId": "XYZ789",
+    "whatsappId": "XYZ789@newsletter",
+    "type": "channel",
+    "status": "success"
+  }
+]
