@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Search, X, Plus, Layers, Loader2, CheckCircle, XCircle } from "lucide-react";
 import { whatsappUrlSchema, batchUrlSchema, type WhatsappUrlInput, type BatchUrlInput, type ExtractionResponse } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
-import { extractWhatsAppId, isValidWhatsAppUrl, parseMultipleUrls } from "@/lib/whatsapp-extractor";
+import { extractWhatsAppId, isValidWhatsAppUrl, parseMultipleUrls, extractUrlsFromText } from "@/lib/whatsapp-extractor";
 
 interface UrlInputFormProps {
   onSingleResult: (result: ExtractionResponse) => void;
@@ -79,10 +79,15 @@ export default function UrlInputForm({ onSingleResult, onBatchResults, onClearRe
 
   const handleUrlInputChange = (value: string) => {
     setUrlInput(value);
-    singleForm.setValue('url', value);
     
-    if (value.trim()) {
-      setIsValidUrl(isValidWhatsAppUrl(value));
+    // Coba ekstrak URL dari teks yang diinput
+    const extractedUrls = extractUrlsFromText(value);
+    const urlToUse = extractedUrls.length > 0 ? extractedUrls[0] : value.trim();
+    
+    singleForm.setValue('url', urlToUse);
+    
+    if (urlToUse) {
+      setIsValidUrl(isValidWhatsAppUrl(urlToUse));
     } else {
       setIsValidUrl(null);
     }
@@ -120,7 +125,7 @@ export default function UrlInputForm({ onSingleResult, onBatchResults, onClearRe
   const detectedUrls = parseMultipleUrls(batchInput);
 
   return (
-    <Card className="mb-8">
+    <Card className="mb-8 glow-effect border-primary/20">
       <CardContent className="p-6">
         <div className="mb-6">
           <h2 className="text-lg font-semibold mb-2">Extract WhatsApp IDs</h2>
@@ -147,7 +152,7 @@ export default function UrlInputForm({ onSingleResult, onBatchResults, onClearRe
                           handleUrlInputChange(e.target.value);
                           field.onChange(e);
                         }}
-                        placeholder="https://chat.whatsapp.com/..."
+                        placeholder="Paste URL atau teks yang berisi link WhatsApp..."
                         className="pr-12"
                         data-testid="url-input"
                       />
@@ -183,7 +188,7 @@ export default function UrlInputForm({ onSingleResult, onBatchResults, onClearRe
             <Button
               type="submit"
               disabled={singleMutation.isPending || !isValidUrl}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto bg-primary hover:bg-primary/90 glow-effect"
               data-testid="extract-single-button"
             >
               {singleMutation.isPending ? (
@@ -224,7 +229,7 @@ export default function UrlInputForm({ onSingleResult, onBatchResults, onClearRe
                           value={batchInput}
                           onChange={(e) => handleBatchInputChange(e.target.value)}
                           rows={6}
-                          placeholder={`Paste multiple URLs here (one per line)\nhttps://chat.whatsapp.com/...\nhttps://whatsapp.com/channel/...`}
+                          placeholder={`Paste teks atau URL di sini:\n\nContoh:\nFollow the channel: https://whatsapp.com/channel/123\nJoin group: https://chat.whatsapp.com/ABC\n\nAtau paste URL langsung (satu per baris)`}
                           className="resize-none"
                           data-testid="batch-url-input"
                         />
@@ -241,6 +246,7 @@ export default function UrlInputForm({ onSingleResult, onBatchResults, onClearRe
                   <Button
                     type="submit"
                     disabled={batchMutation.isPending || detectedUrls.length === 0}
+                    className="bg-primary hover:bg-primary/90 glow-effect"
                     data-testid="extract-batch-button"
                   >
                     {batchMutation.isPending ? (

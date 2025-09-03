@@ -90,17 +90,53 @@ export function isValidWhatsAppUrl(url: string): boolean {
   }
 }
 
+export function extractUrlsFromText(text: string): string[] {
+  const urls: string[] = [];
+  
+  // Regex untuk mendeteksi URL WhatsApp dalam teks
+  const whatsappUrlRegex = /https?:\/\/(chat\.whatsapp\.com\/[^\s]+|(?:www\.)?whatsapp\.com\/(invite|channel)\/[^\s]+)/gi;
+  
+  const matches = text.match(whatsappUrlRegex);
+  if (matches) {
+    for (const match of matches) {
+      // Bersihkan URL dari karakter tambahan di akhir
+      const cleanUrl = match.replace(/[.,;)!?]+$/, '');
+      if (isValidWhatsAppUrl(cleanUrl)) {
+        urls.push(cleanUrl);
+      }
+    }
+  }
+  
+  return urls;
+}
+
 export function parseMultipleUrls(text: string): string[] {
+  // Pertama coba ekstrak URL dari teks
+  const extractedUrls = extractUrlsFromText(text);
+  if (extractedUrls.length > 0) {
+    return extractedUrls;
+  }
+  
+  // Fallback ke parsing per baris
   const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
   const urls: string[] = [];
   
   for (const line of lines) {
-    try {
-      new URL(line);
-      urls.push(line);
-    } catch {
-      // Skip invalid URLs
-      continue;
+    // Coba ekstrak URL dari setiap baris
+    const lineUrls = extractUrlsFromText(line);
+    urls.push(...lineUrls);
+    
+    // Jika tidak ada URL yang diekstrak, coba sebagai URL langsung
+    if (lineUrls.length === 0) {
+      try {
+        new URL(line);
+        if (isValidWhatsAppUrl(line)) {
+          urls.push(line);
+        }
+      } catch {
+        // Skip invalid URLs
+        continue;
+      }
     }
   }
   

@@ -33,7 +33,7 @@ export default function ExtractionResults({ results }: ExtractionResultsProps) {
       {results.map((result, index) => (
         <Card 
           key={index} 
-          className={`fade-in ${result.status === 'error' ? 'border-destructive/20' : ''}`}
+          className={`fade-in glow-effect ${result.status === 'error' ? 'border-destructive/20' : result.status === 'success' ? 'border-primary/30 success-pulse' : ''}`}
           data-testid={`result-${index}`}
         >
           <CardContent className="p-6">
@@ -119,6 +119,7 @@ export default function ExtractionResults({ results }: ExtractionResultsProps) {
                         <Button
                           size="sm"
                           onClick={() => copyToClipboard(result.whatsappId!)}
+                          className="bg-primary hover:bg-primary/90"
                           data-testid={`copy-button-${index}`}
                         >
                           <Copy className="mr-1 h-3 w-3" />

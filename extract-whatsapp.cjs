@@ -5,6 +5,24 @@
  * Ekstrak ID dari URL WhatsApp Group dan Channel
  */
 
+function extractUrlsFromText(text) {
+  const urls = [];
+  
+  // Regex untuk mendeteksi URL WhatsApp dalam teks
+  const whatsappUrlRegex = /https?:\/\/(chat\.whatsapp\.com\/[^\s]+|(?:www\.)?whatsapp\.com\/(invite|channel)\/[^\s]+)/gi;
+  
+  const matches = text.match(whatsappUrlRegex);
+  if (matches) {
+    for (const match of matches) {
+      // Bersihkan URL dari karakter tambahan di akhir
+      const cleanUrl = match.replace(/[.,;)!?]+$/, '');
+      urls.push(cleanUrl);
+    }
+  }
+  
+  return urls;
+}
+
 function extractWhatsAppId(url) {
   try {
     const urlObj = new URL(url);
@@ -85,6 +103,37 @@ function processUrls(urls) {
   return results;
 }
 
+function processTextInput(text) {
+  // Pertama coba ekstrak URL dari teks
+  const extractedUrls = extractUrlsFromText(text);
+  if (extractedUrls.length > 0) {
+    return processUrls(extractedUrls);
+  }
+  
+  // Fallback ke parsing per baris
+  const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+  const allUrls = [];
+  
+  for (const line of lines) {
+    // Coba ekstrak URL dari setiap baris
+    const lineUrls = extractUrlsFromText(line);
+    allUrls.push(...lineUrls);
+    
+    // Jika tidak ada URL yang diekstrak, coba sebagai URL langsung
+    if (lineUrls.length === 0) {
+      try {
+        new URL(line);
+        allUrls.push(line);
+      } catch {
+        // Skip invalid URLs
+        continue;
+      }
+    }
+  }
+  
+  return processUrls(allUrls);
+}
+
 function displayResults(results) {
   console.log('\n=== HASIL EKSTRAKSI WHATSAPP ID ===\n');
   
@@ -125,10 +174,11 @@ function main() {
     console.log('=====================');
     console.log('');
     console.log('Cara pakai:');
-    console.log('  node extract-whatsapp.cjs <URL1> [URL2] [URL3] ...');
+    console.log('  node extract-whatsapp.cjs <URL atau teks>');
     console.log('');
     console.log('Contoh:');
     console.log('  node extract-whatsapp.cjs https://chat.whatsapp.com/ABC123');
+    console.log('  node extract-whatsapp.cjs "Follow channel: https://whatsapp.com/channel/XYZ456"');
     console.log('  node extract-whatsapp.cjs https://whatsapp.com/channel/XYZ456');
     console.log('');
     console.log('Format yang didukung:');
@@ -142,7 +192,9 @@ function main() {
     return;
   }
   
-  const results = processUrls(args.filter(arg => !arg.startsWith('--')));
+  // Gabungkan semua argument menjadi satu teks
+  const inputText = args.filter(arg => !arg.startsWith('--')).join(' ');
+  const results = processTextInput(inputText);
   displayResults(results);
   
   // Export hasil ke file JSON jika ada flag --export

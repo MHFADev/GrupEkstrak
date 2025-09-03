@@ -27,17 +27,17 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background gradient-bg">
       {/* Header */}
-      <header className="bg-card shadow-sm border-b border-border">
+      <header className="bg-card/80 backdrop-blur-sm shadow-sm border-b border-border sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center glow-effect">
                 <MessageSquare className="text-primary-foreground text-xl" />
               </div>
               <div>
-                <h1 className="text-xl font-semibold text-foreground">WhatsApp URL Extractor</h1>
+                <h1 className="text-xl font-bold text-foreground bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">WhatsApp URL Extractor</h1>
                 <p className="text-sm text-muted-foreground">Extract Group & Channel IDs from URLs</p>
               </div>
             </div>
